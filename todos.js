@@ -25,6 +25,7 @@ app.get("/todos", function(req, res) {
     } else {
       const mapped = data.map(tasks => {
         tasks.completed = tasks.completed === 1 ? true : false;
+        tasks.important = tasks.important === 1 ? true : false;
         return tasks;
       });
       res.status(200).json({
@@ -51,25 +52,27 @@ app.post("/todos", function(req, res) {
     data
   ) {
     if (err) {
-      response.status(500).json({
+      res.status(500).json({
         error: err
       });
     } else {
       newTask.id = data.insertId;
-      newTask.dateDue= new Date(newTask.dateDue).toISOString();
+      newTask.dateDue= new Date(newTask.dueDate).toISOString();
       res.status(201).json(newTask);
     }
   });
 });
 
-app.put("/todos/:taskId", function(req, res) {
-  const updatedTask = req.body;
-  const id = request.params.id;
+app.put("/todos/:id", function(req, res) {
+  let updatedTask = req.body;
+  updatedTask.completed = updatedTask.completed == true ? 1 : 0;
+  console.log(updatedTask)
+  const id = req.params.id;
   console.log(`RECEIVED REQUEST FOR PUT /todos/${id}`, {
     data: updatedTask
   });
   connection.query(
-    `UPDATE Task SET ? WHERE id=?`,
+    `UPDATE Task SET ? WHERE taskID=?`,
     [updatedTask, id],
     function(err) {
       if (err) {
@@ -91,7 +94,7 @@ app.put("/todos/:taskId", function(req, res) {
 
 app.delete("/todos/:id", function(req, res) {
   const id = req.params.id;
-  connection.query("DELETE FROM Task WHERE id=?", [id], function(err) {
+  connection.query("DELETE FROM Task WHERE taskID=?", [id], function(err) {
     if (err) {
       res.status(500).json({
         error: err
