@@ -35,15 +35,6 @@ app.get("/todos", function(req, res) {
   });
 });
 
-// app.post("/todos", function(req, res) {
-//   const text = req.body.text;
-//   const date = req.body.date;
-
-//   res.status(200).json({
-//     message: `Received a request to add task ${text} with date ${date}`
-//   });
-// });
-
 app.post("/todos", function(req, res) {
   console.log("RECEIVED REQUEST FOR POST /todos", { data: req.body });
   const newTask = req.body;
@@ -83,14 +74,6 @@ app.put("/todos/:id", function(req, res) {
     }
   );
 });
-
-// app.delete("/todos/:taskId", function(req, res) {
-//   const id = req.params.taskId;
-
-//   res.status(200).json({
-//     message: `Deleted task ID ${id}`
-//   });
-// });
 
 app.delete("/todos/:id", function(req, res) {
   const id = req.params.id;
